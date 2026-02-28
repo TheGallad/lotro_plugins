@@ -1,24 +1,20 @@
-import "LotroPointTracker.TurbineUtils"
-
 LotroPointTrackerWindow = class(Turbine.UI.Window)
 
-function LotroPointTrackerWindow:Constructor()
-    Turbine.UI.Window.Constructor(self)
-
-    self.Points = TotalPoints
+function LotroPointTrackerWindow:Init(totalPoints, windowWidth, windowHeight)
+    self.points = totalPoints
 
     self.width = WIDTH
-    if (type(ACTUALWIDTH) == "number") then
-        self.width = ACTUALWIDTH
+    if (type(windowWidth) == "number") then
+        self.width = windowWidth
     end
 
     self.height = HEIGHT
-    if (type(ACTUALHEIGHT) == "number") then
-        self.height = ACTUALHEIGHT
+    if (type(windowHeight) == "number") then
+        self.height = windowHeight
     end
 
     self:SetSize(self.width, self.height)
-    self:SetPosition(LEFT, TOP)
+    self:SetPosition(X_POS, Y_POS)
     self:SetBackColor(Turbine.UI.Color.Black)
     self:SetMouseVisible(false)
 
@@ -37,7 +33,7 @@ function LotroPointTrackerWindow:Constructor()
     self.pointsLabel:SetFont(FONT)
     self.pointsLabel:SetFontStyle(Turbine.UI.FontStyle.Outline)
     self.pointsLabel:SetMouseVisible(false)
-    self.pointsLabel:SetText("LP: " .. tostring(self.Points))
+    self.pointsLabel:SetText("LP: " .. tostring(self.points))
 
     -- MoveControl
     self.moveControl = Turbine.UI.Control()
@@ -57,8 +53,8 @@ function LotroPointTrackerWindow:Constructor()
     self.moveControl.MouseUp = function(sender, args)
         if args.Button == Turbine.UI.MouseButton.Left then
             self.dragging = false
-            LEFT = self:GetLeft()
-            TOP = self:GetTop()
+            X_POS = self:GetLeft()
+            Y_POS = self:GetTop()
         end
     end
 
@@ -72,7 +68,9 @@ function LotroPointTrackerWindow:Constructor()
     end
 end
 
-function LotroPointTrackerWindow:Resize()
+function LotroPointTrackerWindow:Resize(width, height)
+    self.width = width
+    self.height = height
     self:SetSize(self.width, self.height)
     self.labelBack:SetSize(self.width, self.height)
     self.moveControl:SetWidth(self:GetWidth())
@@ -80,8 +78,8 @@ function LotroPointTrackerWindow:Resize()
 end
 
 function LotroPointTrackerWindow:UpdateCounter(counter)
-    self.Points = counter
+    self.points = counter
     if self.pointsLabel then
-        self.pointsLabel:SetText("LP: " .. tostring(self.Points))
+        self.pointsLabel:SetText("LP: " .. tostring(self.points))
     end
 end

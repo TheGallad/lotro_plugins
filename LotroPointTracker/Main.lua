@@ -1,26 +1,29 @@
-import "Turbine.Gameplay"
-import "LotroPointTracker.TurbineUtils"
+import "Turbine.UI.Lotro"
 import "LotroPointTracker.UI"
+import "LotroPointTracker.Settings"
 
---[[ PreSets ]]
-FONT              = Turbine.UI.Lotro.Font.Verdana14
-WIDTH             = 100
-HEIGHT            = 30
-LEFT              = 1000
-TOP               = 50
-MOVE              = true
-SETTINGSFONT      = Turbine.UI.Lotro.Font.BookAntiqua20
-SETTINGSFONTSMALL = Turbine.UI.Lotro.Font.BookAntiqua16
+-- PreSets
 
---[[ Actual Values ]]
-ACTUALWIDTH   = WIDTH
-ACTUALHEIGHT  = HEIGHT
+FONT               = Turbine.UI.Lotro.Font.Verdana14
+WIDTH              = 100
+HEIGHT             = 30
+X_POS              = Turbine.UI.Display.GetWidth() / 2
+Y_POS              = 50
+MOVE               = true
+SETTINGSFONT       = Turbine.UI.Lotro.Font.BookAntiqua20
+SETTINGSFONTSMALL  = Turbine.UI.Lotro.Font.BookAntiqua16
 
-local PATTERN = "You've earned (%d+) LOTRO Points."
-TotalPoints   = 0
+-- Global static variables
 
-local function Save(filename, params)
-    local success = pcall(Turbine.PluginData.Save, Turbine.DataScope.Character, filename, params)
+PLUGIN_VERSION     = "1.1.0"
+DATA_FILE_NAME     = "LPT_Data"
+SETTINGS_FILE_NAME = "LPT_Settings"
+
+local PATTERN      = "You've earned (%d+) LOTRO Points."
+local totalPoints  = 0
+
+local function Save(params)
+    local success = pcall(Turbine.PluginData.Save, Turbine.DataScope.Character, DATA_FILE_NAME, params)
     if success then
         Turbine.Shell.WriteLine("File is saved")
     else
@@ -28,8 +31,9 @@ local function Save(filename, params)
     end
 end
 
-local function Load(filename)
-    local success, loadedData = pcall(Turbine.PluginData.Load, Turbine.DataScope.Character, filename)
+---@return {total_points : number}|nil
+local function Load()
+    local success, loadedData = pcall(Turbine.PluginData.Load, Turbine.DataScope.Character, DATA_FILE_NAME)
     if not success then
         -- loadedData is an error if pcall returned false
         Turbine.Shell.WriteLine("Error loading file: " .. tostring(loadedData))
@@ -44,16 +48,38 @@ local function Load(filename)
 end
 
 -- main block
-Turbine.Shell.WriteLine("LotroPointTracker plugin. ver. 1.0.0")
-TotalPoints = Load("lp_farm_session").total_points
+Turbine.Shell.WriteLine("LotroPointTracker plugin v" .. PLUGIN_VERSION)
+totalPoints = Load().total_points
 
 local lotroPointTrackerWindow = LotroPointTrackerWindow()
+local optionsPanel = Options()
+
+local settings = optionsPanel:Load()
+if settings ~= nil then
+    X_POS = settings.x_pos
+    Y_POS = settings.y_pos
+    WIDTH = settings.window_width
+    HEIGHT = settings.window_height
+end
+
+optionsPanel:Init(lotroPointTrackerWindow)
+lotroPointTrackerWindow:Init(totalPoints, WIDTH, HEIGHT)
 lotroPointTrackerWindow:SetVisible(true)
+
+optionsPanel.SizeChanged = function(sender, args)
+    local optionsPanelWidth = optionsPanel:GetWidth()
+
+    optionsPanel:SetHeight(optionsPanelWidth)
+end
+
+plugin.GetOptionsPanel = function(self)
+    return optionsPanel
+end
 
 -- hiding UI fix
 
-local vitalHudVisible = true    -- the actual HUD state is not exposed to Lua so we have to assume the HUD is visible when the plugin loads
-local vitalWindowVisible = true -- used to retain the state of the window for when the HUD is toggled back on
+local vitalHudVisible = true            -- the actual HUD state is not exposed to Lua so we have to assume the HUD is visible when the plugin loads
+local vitalWindowVisible = true         -- used to retain the state of the window for when the HUD is toggled back on
 lotroPointTrackerWindow.KeyDown = function(sender, args)
     if (args.Action == 0x100000B3) then -- toggle HUD (the HUD action is not defined in the Turbine.UI.Lotro.Action enumeration although it should be). 268435635 = 0x100000B3
         vitalHudVisible = not vitalHudVisible
@@ -72,9 +98,9 @@ lotroPointTrackerWindow:SetWantsKeyEvents(true) -- enable keyevents (Actions) fo
 function Turbine.Chat.Received(sender, args)
     local _, _, points = string.find(args.Message, PATTERN)
     if args.ChatType == Turbine.ChatType.Advancement and points then
-        TotalPoints = TotalPoints + tonumber(points)
+        totalPoints = totalPoints + tonumber(points)
         if lotroPointTrackerWindow then
-            lotroPointTrackerWindow:UpdateCounter(TotalPoints)
+            lotroPointTrackerWindow:UpdateCounter(totalPoints)
         end
     end
 end
@@ -85,7 +111,7 @@ local resetCommand = Turbine.ShellCommand()
 
 function resetCommand:Execute(args)
     if args == "reset" then
-        TotalPoints = 0
+        totalPoints = 0
         if lotroPointTrackerWindow then
             lotroPointTrackerWindow:UpdateCounter(0)
         end
@@ -95,11 +121,13 @@ end
 
 -- command register block
 
-Turbine.Shell.AddCommand("lpc", resetCommand)
+Turbine.Shell.AddCommand("lpt", resetCommand)
 
 -- plugin functions implementation block
 
 plugin.Unload = function(sender, args)
-    Save("lp_farm_session", { total_points = TotalPoints })
+    local data = { total_points = totalPoints }
+    Save(data)
+    optionsPanel:Save()
     Turbine.Shell.RemoveCommand(resetCommand)
 end
