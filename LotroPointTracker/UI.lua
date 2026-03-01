@@ -1,7 +1,10 @@
 LotroPointTrackerWindow = class(Turbine.UI.Window)
 
-function LotroPointTrackerWindow:Init(totalPoints, windowWidth, windowHeight)
-    self.points = totalPoints
+---@param lpCounter {lp_char : number, lp_account : number}
+---@param windowWidth number
+---@param windowHeight number
+function LotroPointTrackerWindow:Init(lpCounter, windowWidth, windowHeight)
+    self.lpCounter = lpCounter
 
     self.width = WIDTH
     if (type(windowWidth) == "number") then
@@ -33,7 +36,10 @@ function LotroPointTrackerWindow:Init(totalPoints, windowWidth, windowHeight)
     self.pointsLabel:SetFont(FONT)
     self.pointsLabel:SetFontStyle(Turbine.UI.FontStyle.Outline)
     self.pointsLabel:SetMouseVisible(false)
-    self.pointsLabel:SetText("LP: " .. tostring(self.points))
+    self.pointsLabel:SetText(
+        "LP (char): " .. tostring(self.lpCounter.lp_char) .. "\n" ..
+        "LP (account): " .. tostring(self.lpCounter.lp_account)
+    )
 
     -- MoveControl
     self.moveControl = Turbine.UI.Control()
@@ -77,9 +83,13 @@ function LotroPointTrackerWindow:Resize(width, height)
     self.moveControl:SetHeight(self:GetHeight())
 end
 
-function LotroPointTrackerWindow:UpdateCounter(counter)
-    self.points = counter
+---@param lpCounter {lp_char : number, lp_account : number}
+function LotroPointTrackerWindow:UpdateCounter(lpCounter)
+    self.lpCounter = lpCounter
     if self.pointsLabel then
-        self.pointsLabel:SetText("LP: " .. tostring(self.points))
+        self.pointsLabel:SetText(
+            "LP (char): " .. tostring(self.lpCounter.lp_char) .. "\n" ..
+            "LP (account): " .. tostring(self.lpCounter.lp_account)
+        )
     end
 end

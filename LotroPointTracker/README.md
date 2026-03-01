@@ -17,3 +17,10 @@
 - Fix minor warnings of Lua diagnostics
 - Remove unused imports
 - Refactor code
+
+## v1.2.0
+
+### changelog:
+- Add account LP counter
+- Add new commands. Now it is possible to reset LP counter for char, for account and both
+- Refactor code

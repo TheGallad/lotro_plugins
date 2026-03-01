@@ -5,7 +5,7 @@ import "LotroPointTracker.Settings"
 -- PreSets
 
 FONT               = Turbine.UI.Lotro.Font.Verdana14
-WIDTH              = 100
+WIDTH              = 150
 HEIGHT             = 30
 X_POS              = Turbine.UI.Display.GetWidth() / 2
 Y_POS              = 50
@@ -15,15 +15,16 @@ SETTINGSFONTSMALL  = Turbine.UI.Lotro.Font.BookAntiqua16
 
 -- Global static variables
 
-PLUGIN_VERSION     = "1.1.0"
+PLUGIN_VERSION     = "1.2.0"
 DATA_FILE_NAME     = "LPT_Data"
 SETTINGS_FILE_NAME = "LPT_Settings"
 
 local PATTERN      = "You've earned (%d+) LOTRO Points."
-local totalPoints  = 0
 
-local function Save(params)
-    local success = pcall(Turbine.PluginData.Save, Turbine.DataScope.Character, DATA_FILE_NAME, params)
+local lpCounter    = { lp_char = 0, lp_account = 0 }
+
+local function Save(scope, filename, params)
+    local success = pcall(Turbine.PluginData.Save, scope, filename, params)
     if success then
         Turbine.Shell.WriteLine("File is saved")
     else
@@ -31,25 +32,34 @@ local function Save(params)
     end
 end
 
----@return {total_points : number}|nil
-local function Load()
-    local success, loadedData = pcall(Turbine.PluginData.Load, Turbine.DataScope.Character, DATA_FILE_NAME)
+---@return {lp : number}|nil
+local function Load(scope, filename)
+    local success, loadedData = pcall(Turbine.PluginData.Load, scope, filename)
     if not success then
         -- loadedData is an error if pcall returned false
-        Turbine.Shell.WriteLine("Error loading file: " .. tostring(loadedData))
-        return
+        Turbine.Shell.WriteLine("Error loading file: " .. tostring(loadedData) .. ". Using default data.")
+        return nil
     end
     if loadedData == nil then
         Turbine.Shell.WriteLine("File with saved data not found or data is not correct. Using default data.")
-        return { total_points = 0 } -- return default table
+        return { lp = 0 }
     end
     Turbine.Shell.WriteLine("File successfully loaded")
     return loadedData
 end
 
 -- main block
+
 Turbine.Shell.WriteLine("LotroPointTracker plugin v" .. PLUGIN_VERSION)
-totalPoints = Load().total_points
+
+local loadedDataChar = Load(Turbine.DataScope.Character, DATA_FILE_NAME)
+if loadedDataChar ~= nil then
+    lpCounter.lp_char = loadedDataChar.lp
+end
+local loadedDataAccount = Load(Turbine.DataScope.Account, DATA_FILE_NAME)
+if loadedDataAccount ~= nil then
+    lpCounter.lp_account = loadedDataAccount.lp
+end
 
 local lotroPointTrackerWindow = LotroPointTrackerWindow()
 local optionsPanel = Options()
@@ -63,17 +73,12 @@ if settings ~= nil then
 end
 
 optionsPanel:Init(lotroPointTrackerWindow)
-lotroPointTrackerWindow:Init(totalPoints, WIDTH, HEIGHT)
+lotroPointTrackerWindow:Init(lpCounter, WIDTH, HEIGHT)
 lotroPointTrackerWindow:SetVisible(true)
 
 optionsPanel.SizeChanged = function(sender, args)
     local optionsPanelWidth = optionsPanel:GetWidth()
-
     optionsPanel:SetHeight(optionsPanelWidth)
-end
-
-plugin.GetOptionsPanel = function(self)
-    return optionsPanel
 end
 
 -- hiding UI fix
@@ -98,36 +103,55 @@ lotroPointTrackerWindow:SetWantsKeyEvents(true) -- enable keyevents (Actions) fo
 function Turbine.Chat.Received(sender, args)
     local _, _, points = string.find(args.Message, PATTERN)
     if args.ChatType == Turbine.ChatType.Advancement and points then
-        totalPoints = totalPoints + tonumber(points)
+        lpCounter.lp_char = lpCounter.lp_char + tonumber(points)
+        lpCounter.lp_account = lpCounter.lp_account + tonumber(points)
         if lotroPointTrackerWindow then
-            lotroPointTrackerWindow:UpdateCounter(totalPoints)
+            lotroPointTrackerWindow:UpdateCounter(lpCounter)
         end
     end
 end
 
 -- command block
 
-local resetCommand = Turbine.ShellCommand()
+local lptCommand = Turbine.ShellCommand()
 
-function resetCommand:Execute(args)
-    if args == "reset" then
-        totalPoints = 0
+function lptCommand:Execute(args)
+    if args == "reset_char" then
+        lpCounter = { lp_char = 0, lp_account = lpCounter.lp_account }
         if lotroPointTrackerWindow then
-            lotroPointTrackerWindow:UpdateCounter(0)
+            lotroPointTrackerWindow:UpdateCounter(lpCounter)
         end
-        Turbine.Shell.WriteLine("Lotro Points counter reseted!")
+        Turbine.Shell.WriteLine("Lotro Points counter for character reseted!")
+    end
+    if args == "reset_account" then
+        lpCounter = { lp_char = lpCounter.lp_char, lp_account = 0 }
+        if lotroPointTrackerWindow then
+            lotroPointTrackerWindow:UpdateCounter(lpCounter)
+        end
+        Turbine.Shell.WriteLine("Lotro Points counter for account reseted!")
+    end
+    if args == "reset_all" then
+        lpCounter = { lp_char = 0, lp_account = 0 }
+        if lotroPointTrackerWindow then
+            lotroPointTrackerWindow:UpdateCounter(lpCounter)
+        end
+        Turbine.Shell.WriteLine("Lotro Points counter for account and character reseted!")
     end
 end
 
 -- command register block
 
-Turbine.Shell.AddCommand("lpt", resetCommand)
+Turbine.Shell.AddCommand("lpt", lptCommand)
 
 -- plugin functions implementation block
 
-plugin.Unload = function(sender, args)
-    local data = { total_points = totalPoints }
-    Save(data)
+plugin.GetOptionsPanel = function()
+    return optionsPanel
+end
+
+plugin.Unload = function()
+    Save(Turbine.DataScope.Character, DATA_FILE_NAME, { lp = lpCounter.lp_char })
+    Save(Turbine.DataScope.Account, DATA_FILE_NAME, { lp = lpCounter.lp_account })
     optionsPanel:Save()
-    Turbine.Shell.RemoveCommand(resetCommand)
+    Turbine.Shell.RemoveCommand(lptCommand)
 end
