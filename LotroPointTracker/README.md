@@ -24,3 +24,9 @@
 - Add account LP counter
 - Add new commands. Now it is possible to reset LP counter for char, for account and both
 - Refactor code
+
+## v1.2.1
+
+### changelog:
+- Fix reset command
+- Add more details to save and load messages

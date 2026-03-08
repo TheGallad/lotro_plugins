@@ -15,10 +15,14 @@ SETTINGSFONTSMALL  = Turbine.UI.Lotro.Font.BookAntiqua16
 
 -- Global static variables
 
-PLUGIN_VERSION     = "1.2.0"
+PLUGIN_VERSION     = "1.2.1"
 DATA_FILE_NAME     = "LPT_Data"
 SETTINGS_FILE_NAME = "LPT_Settings"
 
+local reversedScopeTable = {
+    [1] = "Account",
+    [3] = "Character"
+}
 local PATTERN      = "You've earned (%d+) LOTRO Points."
 
 local lpCounter    = { lp_char = 0, lp_account = 0 }
@@ -26,7 +30,7 @@ local lpCounter    = { lp_char = 0, lp_account = 0 }
 local function Save(scope, filename, params)
     local success = pcall(Turbine.PluginData.Save, scope, filename, params)
     if success then
-        Turbine.Shell.WriteLine("File is saved")
+        Turbine.Shell.WriteLine("File for scope '" .. reversedScopeTable[scope] .. "' is saved")
     else
         Turbine.Shell.WriteLine("An error has occurred while saving data")
     end
@@ -44,7 +48,7 @@ local function Load(scope, filename)
         Turbine.Shell.WriteLine("File with saved data not found or data is not correct. Using default data.")
         return { lp = 0 }
     end
-    Turbine.Shell.WriteLine("File successfully loaded")
+    Turbine.Shell.WriteLine("File for scope '" .. reversedScopeTable[scope] .. "' successfully loaded")
     return loadedData
 end
 
@@ -115,7 +119,7 @@ end
 
 local lptCommand = Turbine.ShellCommand()
 
-function lptCommand:Execute(args)
+function lptCommand:Execute(command, args)
     if args == "reset_char" then
         lpCounter = { lp_char = 0, lp_account = lpCounter.lp_account }
         if lotroPointTrackerWindow then
