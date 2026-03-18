@@ -30,3 +30,8 @@
 ### changelog:
 - Fix reset command
 - Add more details to save and load messages
+
+## v1.2.2
+
+### changelog:
+- Fix an error when Message is nil

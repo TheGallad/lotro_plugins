@@ -15,7 +15,7 @@ SETTINGSFONTSMALL  = Turbine.UI.Lotro.Font.BookAntiqua16
 
 -- Global static variables
 
-PLUGIN_VERSION     = "1.2.1"
+PLUGIN_VERSION     = "1.2.2"
 DATA_FILE_NAME     = "LPT_Data"
 SETTINGS_FILE_NAME = "LPT_Settings"
 
@@ -105,6 +105,9 @@ lotroPointTrackerWindow:SetWantsKeyEvents(true) -- enable keyevents (Actions) fo
 -- Chat Handler
 
 function Turbine.Chat.Received(sender, args)
+    if args.Message == nil then
+        return
+    end
     local _, _, points = string.find(args.Message, PATTERN)
     if args.ChatType == Turbine.ChatType.Advancement and points then
         lpCounter.lp_char = lpCounter.lp_char + tonumber(points)
