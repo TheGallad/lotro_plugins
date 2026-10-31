@@ -27,7 +27,6 @@ Load the plugin, and the tracker appears at the top center of the screen:
 - **Character** — the LOTRO Points earned by the current character
 - **Account** — the LOTRO Points earned account-wide
 
-
 Example:
 
 ![no-image](./examples/lpt-2.svg)

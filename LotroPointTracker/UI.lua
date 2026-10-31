@@ -172,47 +172,44 @@ end
 --- Recalculates the position and size of every element for the current
 --- window size. Called on Init and Resize.
 function LotroPointTrackerWindow:Layout()
-    local w = self.width
-    local h = self.height
-
-    self:SetSize(w, h)
-    self.moveControl:SetSize(w, h)
+    self:SetSize(self.width, self.height)
+    self.moveControl:SetSize(self.width, self.height)
 
     -- outer gold frame
     self.frameTop:SetPosition(0, 0)
-    self.frameTop:SetSize(w, 1)
-    self.frameBottom:SetPosition(0, h - 1)
-    self.frameBottom:SetSize(w, 1)
+    self.frameTop:SetSize(self.width, 1)
+    self.frameBottom:SetPosition(0, self.height - 1)
+    self.frameBottom:SetSize(self.width, 1)
     self.frameLeft:SetPosition(0, 0)
-    self.frameLeft:SetSize(1, h)
-    self.frameRight:SetPosition(w - 1, 0)
-    self.frameRight:SetSize(1, h)
+    self.frameLeft:SetSize(1, self.height)
+    self.frameRight:SetPosition(self.width - 1, 0)
+    self.frameRight:SetSize(1, self.height)
 
     -- inner etched frame
     self.frameInnerTop:SetPosition(1, 1)
-    self.frameInnerTop:SetSize(w - 2, 1)
-    self.frameInnerBottom:SetPosition(1, h - 2)
-    self.frameInnerBottom:SetSize(w - 2, 1)
+    self.frameInnerTop:SetSize(self.width - 2, 1)
+    self.frameInnerBottom:SetPosition(1, self.height - 2)
+    self.frameInnerBottom:SetSize(self.width - 2, 1)
     self.frameInnerLeft:SetPosition(1, 1)
-    self.frameInnerLeft:SetSize(1, h - 2)
-    self.frameInnerRight:SetPosition(w - 2, 1)
-    self.frameInnerRight:SetSize(1, h - 2)
+    self.frameInnerLeft:SetSize(1, self.height - 2)
+    self.frameInnerRight:SetPosition(self.width - 2, 1)
+    self.frameInnerRight:SetSize(1, self.height - 2)
 
     -- left accent bar
     self.accentBar:SetPosition(0, 0)
-    self.accentBar:SetSize(2, h)
+    self.accentBar:SetSize(2, self.height)
 
     -- content rows
     local contentTop = 2
     local dividerSize = 1
-    local rowHeight = math.floor((h - 4 - dividerSize) / 2)
+    local rowHeight = math.floor((self.height - 4 - dividerSize) / 2)
     if rowHeight < 1 then rowHeight = 1 end
 
     local left = 6
     local right = 6
-    local split = math.floor(w * 0.5)
+    local split = math.floor(self.width * 0.5)
     local labelWidth = split - left
-    local valueWidth = w - split - right
+    local valueWidth = self.width - split - right
 
     local row1Y = contentTop
     local row2Y = contentTop + rowHeight + dividerSize
@@ -223,7 +220,7 @@ function LotroPointTrackerWindow:Layout()
     self.charValue:SetSize(valueWidth, rowHeight)
 
     self.divider:SetPosition(left, contentTop + rowHeight)
-    self.divider:SetSize(w - left - right, 1)
+    self.divider:SetSize(self.width - left - right, 1)
 
     self.accountLabel:SetPosition(left, row2Y)
     self.accountLabel:SetSize(labelWidth, rowHeight)
