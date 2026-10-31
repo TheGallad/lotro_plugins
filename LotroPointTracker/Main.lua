@@ -14,7 +14,7 @@ SETTINGSFONTSMALL  = Turbine.UI.Lotro.Font.BookAntiqua16
 
 -- Global static variables
 
-PLUGIN_VERSION     = "1.3.0"
+PLUGIN_VERSION     = "1.3.1"
 DATA_FILE_NAME     = "LPT_Data"
 SETTINGS_FILE_NAME = "LPT_Settings"
 
