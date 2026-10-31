@@ -35,3 +35,15 @@
 
 ### changelog:
 - Fix an error when Message is nil
+
+
+## v1.3.0
+
+### changelog:
+- Redesign the tracker window in LOTRO style: translucent dark panel with a gold outer frame and an etched bronze inner frame
+- Show character and account totals on two separate rows (Trajan font, muted parchment labels, right-aligned gold values)
+- Add thousand separators to the displayed totals (1,250 instead of 1250)
+- Add a golden flash animation on both totals when LOTRO Points are earned
+- Window is locked (not movable) by default, matching the "small fixed window at the top of the screen" concept; movement can still be enabled in the plugin settings
+- New default window size (190x56); the layout and value font automatically adapt to the size set in the settings
+- Properly center the window horizontally on the screen on first launch

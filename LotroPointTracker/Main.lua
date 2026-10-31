@@ -4,18 +4,17 @@ import "LotroPointTracker.Settings"
 
 -- PreSets
 
-FONT               = Turbine.UI.Lotro.Font.Verdana14
-WIDTH              = 150
-HEIGHT             = 30
-X_POS              = Turbine.UI.Display.GetWidth() / 2
+WIDTH              = 190
+HEIGHT             = 56
+X_POS              = math.floor((Turbine.UI.Display.GetWidth() - WIDTH) / 2)
 Y_POS              = 50
-MOVE               = true
+MOVE               = false
 SETTINGSFONT       = Turbine.UI.Lotro.Font.BookAntiqua20
 SETTINGSFONTSMALL  = Turbine.UI.Lotro.Font.BookAntiqua16
 
 -- Global static variables
 
-PLUGIN_VERSION     = "1.2.2"
+PLUGIN_VERSION     = "1.3.0"
 DATA_FILE_NAME     = "LPT_Data"
 SETTINGS_FILE_NAME = "LPT_Settings"
 

@@ -1,0 +1,37 @@
+<svg width="1240" height="300" viewBox="0 0 1240 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c3b2f"/>
+      <stop offset="1" stop-color="#131c15"/>
+    </linearGradient>
+  </defs>
+  <rect width="1240" height="300" fill="url(#bg)"/>
+
+  <!-- window 1: normal state -->
+  <g>
+    <rect x="45" y="60" width="570" height="168" fill="#0a0807" fill-opacity="0.82"/>
+    <rect x="45" y="60" width="570" height="168" fill="none" stroke="#d2a558" stroke-width="3" stroke-opacity="0.9"/>
+    <rect x="48" y="63" width="564" height="162" fill="none" stroke="#6e5427" stroke-width="3" stroke-opacity="0.85"/>
+    <rect x="45" y="60" width="6" height="168" fill="#ecbe63"/>
+    <rect x="66" y="141" width="528" height="3" fill="#6e5427" fill-opacity="0.85"/>
+    <text x="69" y="117" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="38" letter-spacing="3" fill="#c5b699">CHARACTER</text>
+    <text x="594" y="122" text-anchor="end" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="48" font-weight="700" fill="#ffe08c">1,250</text>
+    <text x="69" y="195" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="38" letter-spacing="3" fill="#c5b699">ACCOUNT</text>
+    <text x="594" y="200" text-anchor="end" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="48" font-weight="700" fill="#f0d69d">8,430</text>
+    <text x="330" y="265" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="20" fill="#8a9486">normal state</text>
+  </g>
+
+  <!-- window 2: flash on earned LP -->
+  <g>
+    <rect x="680" y="60" width="570" height="168" fill="#0a0807" fill-opacity="0.82"/>
+    <rect x="680" y="60" width="570" height="168" fill="none" stroke="#d2a558" stroke-width="3" stroke-opacity="0.9"/>
+    <rect x="683" y="63" width="564" height="162" fill="none" stroke="#6e5427" stroke-width="3" stroke-opacity="0.85"/>
+    <rect x="680" y="60" width="6" height="168" fill="#ecbe63"/>
+    <rect x="701" y="141" width="528" height="3" fill="#6e5427" fill-opacity="0.85"/>
+    <text x="704" y="117" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="38" letter-spacing="3" fill="#c5b699">CHARACTER</text>
+    <text x="1229" y="122" text-anchor="end" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="48" font-weight="700" fill="#fff8e6">1,255</text>
+    <text x="704" y="195" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="38" letter-spacing="3" fill="#c5b699">ACCOUNT</text>
+    <text x="1229" y="200" text-anchor="end" font-family="Trajan Pro, 'Palatino Linotype', 'Times New Roman', serif" font-size="48" font-weight="700" fill="#fff8e6">8,435</text>
+    <text x="965" y="265" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="20" fill="#8a9486">golden flash right after "+5 LOTRO Points"</text>
+  </g>
+</svg>
