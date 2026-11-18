@@ -46,3 +46,15 @@
 ### v1.3.1
 
 - Minor fixes
+
+### Unreleased @gallad - choose new version here :)
+
+- Fix the value font shrinking after the first earned LP ([#4](https://github.com/TheGallad/lotro_plugins/issues/4)). The layout switched the font but a LOTRO Label only re-renders with a new font on the next `SetText`, so the startup text kept the old font until the counter changed. The layout now re-applies the text right after changing the font (this also makes size changes from the settings visible immediately)
+- The large value font (TrajanPro18) is now used from a row height of 17px (window height 40px and above) instead of 24px; smaller windows use TrajanPro14
+- Settings: the window size is validated. Width must be 120-800 and height 36-200; out-of-range values are clamped and written back to the fields, non-numbers are rejected and the current size is kept. Previously an invalid value could save an empty size
+- Settings: errors and confirmations are shown in the settings panel instead of chat (only save failures still go to chat)
+- Settings: live preview while typing a valid size; Enter saves (same as Accept), Escape reverts to the last saved size
+- Settings: size presets Small (160x40), Normal (190x56) and Large (260x80)
+- Settings: "Center horizontally" and "Reset to defaults" (190x56, centered at the top) buttons, and the current window position is shown
+- Settings: the unlock checkbox now says that the window locks again on reload
+- A settings file with a missing size or position (saved by the old Accept bug) is repaired with defaults on load

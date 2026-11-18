@@ -18,6 +18,10 @@ local FONT_LABEL   = Turbine.UI.Lotro.Font.TrajanPro14
 local FONT_VALUE   = Turbine.UI.Lotro.Font.TrajanPro18
 local FONT_VALUE_S = Turbine.UI.Lotro.Font.TrajanPro14
 
+-- Smallest row height (px) that still uses FONT_VALUE. TrajanPro18 fits a
+-- 17px row (window height 40), so smaller rows fall back to FONT_VALUE_S.
+local MIN_ROW_HEIGHT_FOR_VALUE_FONT = 17
+
 local FLASH_FRAMES = 45 -- ~0.75s at 60 fps
 
 --------------------------------------------------------------------------------
@@ -55,6 +59,16 @@ local function Bar(parent, color)
     bar:SetBackColor(RGBA(color))
     bar:SetMouseVisible(false)
     return bar
+end
+
+--- A Label keeps rendering its current text with the old font after SetFont;
+--- the new font only shows up on the next SetText. Re-apply the text so the
+--- font change is visible immediately.
+local function SetLabelFont(label, font)
+    label:SetFont(font)
+    local text = label:GetText()
+    label:SetText("")
+    label:SetText(text)
 end
 
 local function TextLabel(parent, font, color, alignment)
@@ -229,9 +243,9 @@ function LotroPointTrackerWindow:Layout()
 
     -- the value font scales with the row height
     local valueFont = FONT_VALUE_S
-    if rowHeight >= 24 then valueFont = FONT_VALUE end
-    self.charValue:SetFont(valueFont)
-    self.accountValue:SetFont(valueFont)
+    if rowHeight >= MIN_ROW_HEIGHT_FOR_VALUE_FONT then valueFont = FONT_VALUE end
+    SetLabelFont(self.charValue, valueFont)
+    SetLabelFont(self.accountValue, valueFont)
 end
 
 function LotroPointTrackerWindow:Resize(width, height)
