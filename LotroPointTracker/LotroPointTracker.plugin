@@ -3,7 +3,7 @@
     <Information>
         <Name>LotroPointTracker</Name>
         <Author>Gallad|EBCEYS</Author>
-        <Version>1.3.1</Version>
+        <Version>1.3.2</Version>
         <Description>LP tracker
             Useful commands:
             lpt reset_char - reset points counter for character

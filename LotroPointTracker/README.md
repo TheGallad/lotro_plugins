@@ -47,7 +47,7 @@
 
 - Minor fixes
 
-### Unreleased @gallad - choose new version here :)
+### 1.3.2
 
 - Fix the value font shrinking after the first earned LP ([#4](https://github.com/TheGallad/lotro_plugins/issues/4)). The layout switched the font but a LOTRO Label only re-renders with a new font on the next `SetText`, so the startup text kept the old font until the counter changed. The layout now re-applies the text right after changing the font (this also makes size changes from the settings visible immediately)
 - The large value font (TrajanPro18) is now used from a row height of 17px (window height 40px and above) instead of 24px; smaller windows use TrajanPro14
